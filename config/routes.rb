@@ -95,7 +95,11 @@ Rails.application.routes.draw do
       resource :self_assignment, only: :create
       resources :steps
       resources :taggings
-      resources :agent_sessions, only: %i[ create show ]
+      resources :agent_sessions, only: %i[ create show ] do
+        scope module: :agent_sessions do
+          resources :callbacks, only: :create, param: :turn_id
+        end
+      end
 
       resources :comments do
         resources :reactions, module: :comments

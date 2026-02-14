@@ -5,7 +5,7 @@ module AgentSession::Turnable
 
   def take_next_turn
     if turns_remaining?
-      turns.create!(position: next_position).process_later
+      turns.create!(position: next_position).submit_later
     else
       complete(result: turns.last&.response)
     end

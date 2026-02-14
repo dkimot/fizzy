@@ -8,13 +8,28 @@ class AgentSession::Turn < ApplicationRecord
 
   scope :chronologically, -> { order(position: :asc) }
 
-  def process_later
-    AgentSession::Turn::ProcessJob.perform_later(self)
+  def submit_later
+    AgentSession::Turn::SubmitJob.perform_later(self)
   end
 
-  def process_now
+  # Sends the LLM request and returns immediately.
+  # The job worker is only occupied for the HTTP round-trip,
+  # not waiting for the full LLM response. The provider calls
+  # back to fulfill the turn when the response is ready.
+  def submit_now
     processing!
-    execute
+  rescue => e
+    failed!
+    agent_session.send(:mark_as_failed)
+    raise e
+  end
+
+  # Called when the LLM provider delivers a response, either via
+  # a webhook callback or inline during submit. Records the response,
+  # executes any tool call, and continues the agent loop.
+  def fulfill(response_text:, tool_name: nil, tool_input: nil)
+    update!(response: response_text, tool_name: tool_name, tool_input: tool_input)
+    run_tool if tool_name.present?
     completed!
     continue_or_finish
   rescue => e
@@ -24,15 +39,13 @@ class AgentSession::Turn < ApplicationRecord
   end
 
   private
-    def execute
-      # Subclass or configure with a strategy to call the LLM provider.
-      # The response, tool_name, tool_input, and tool_output fields
-      # capture the full turn lifecycle:
-      #
-      #   1. Send prompt + context → LLM
-      #   2. Record response
-      #   3. If tool_call requested → execute tool, record tool_output
-      raise NotImplementedError, "Subclasses must implement execute"
+    def run_tool
+      output = toolbox.call(tool_name, tool_input)
+      update!(tool_output: output)
+    end
+
+    def toolbox
+      AgentSession::Toolbox.new(agent_session.card)
     end
 
     def continue_or_finish

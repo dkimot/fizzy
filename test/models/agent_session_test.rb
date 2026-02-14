@@ -24,7 +24,7 @@ class AgentSessionTest < ActiveSupport::TestCase
     session = agent_sessions(:logo_session)
     session.update!(status: :pending)
 
-    # Stub take_next_turn to avoid NotImplementedError from Turn#execute
+    # Stub take_next_turn to avoid hitting the submit job chain
     session.stub(:take_next_turn, nil) do
       session.run_now
     end

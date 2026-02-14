@@ -1,9 +1,9 @@
-class AgentSession::Turn::ProcessJob < ApplicationJob
+class AgentSession::Turn::SubmitJob < ApplicationJob
   queue_as :backend
 
   discard_on ActiveJob::DeserializationError
 
   def perform(turn)
-    turn.process_now
+    turn.submit_now
   end
 end
