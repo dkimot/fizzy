@@ -7,7 +7,7 @@ class AgentSession::Tool::GetCard < AgentSession::Tool
     if found_card = account.cards.published.find_by(number: input.to_i)
       found_card.to_prompt
     else
-      { error: "Card ##{input} not found" }.to_json
+      "Error: Card ##{input} not found"
     end
   end
 end

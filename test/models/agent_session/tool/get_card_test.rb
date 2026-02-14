@@ -15,7 +15,7 @@ class AgentSession::Tool::GetCardTest < ActiveSupport::TestCase
   test "returns error for missing card" do
     result = @tool.call("99999")
 
-    assert_includes result, "not found"
+    assert_includes result, "Error: Card #99999 not found"
   end
 
   test "tool_name" do

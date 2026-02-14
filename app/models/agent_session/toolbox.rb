@@ -14,7 +14,7 @@ class AgentSession::Toolbox
     if tool_class = find(tool_name)
       tool_class.new(card).call(input)
     else
-      { error: "Unknown tool: #{tool_name}" }.to_json
+      "Error: Unknown tool: #{tool_name}"
     end
   end
 

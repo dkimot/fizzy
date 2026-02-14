@@ -4,7 +4,12 @@ class AgentSession::Tool::SearchCards < AgentSession::Tool
   end
 
   def call(input)
-    cards = board.cards.published.where("title LIKE ?", "%#{input}%").limit(10)
+    cards = board.cards.published.where("title LIKE ?", "%#{sanitize(input)}%").limit(10)
     cards.map(&:to_prompt).join("\n")
   end
+
+  private
+    def sanitize(input)
+      ActiveRecord::Base.sanitize_sql_like(input)
+    end
 end
