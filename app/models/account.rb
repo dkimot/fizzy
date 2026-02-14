@@ -11,6 +11,7 @@ class Account < ApplicationRecord
   has_many :entropies, dependent: :destroy
   has_many :exports, class_name: "Account::Export", dependent: :destroy
   has_many :imports, class_name: "Account::Import", dependent: :destroy
+  has_many :agent_sessions, dependent: :destroy
 
   scope :importing, -> { left_joins(:imports).where(account_imports: { status: %i[pending processing failed] }) }
   scope :active, -> { where.missing(:cancellation).and(where.not(id: importing)) }

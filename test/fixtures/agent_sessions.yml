@@ -1,0 +1,11 @@
+logo_session:
+  id: <%= ActiveRecord::FixtureSet.identify("logo_session", :uuid) %>
+  card: logo_uuid
+  creator: david_uuid
+  account: 37s_uuid
+  status: completed
+  prompt: Summarize this card and suggest next steps
+  result: The card discusses logo sizing. Consider conducting a user survey for preferred dimensions.
+  completed_at: <%= 1.day.ago %>
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 1.day.ago %>

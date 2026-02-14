@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_12_102026) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_14_182100) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -67,6 +67,37 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_12_102026) do
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["external_account_id"], name: "index_accounts_on_external_account_id", unique: true
+  end
+
+  create_table "agent_session_turns", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "agent_session_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "position", null: false
+    t.text "response"
+    t.string "status", default: "pending", null: false
+    t.text "tool_input"
+    t.string "tool_name"
+    t.text "tool_output"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_agent_session_turns_on_account_id"
+    t.index ["agent_session_id", "position"], name: "idx_on_agent_session_id_position_unique", unique: true
+    t.index ["agent_session_id"], name: "index_agent_session_turns_on_agent_session_id"
+  end
+
+  create_table "agent_sessions", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "card_id", null: false
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.uuid "creator_id", null: false
+    t.string "prompt", null: false
+    t.text "result"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_agent_sessions_on_account_id"
+    t.index ["card_id"], name: "index_agent_sessions_on_card_id"
+    t.index ["creator_id"], name: "index_agent_sessions_on_creator_id"
   end
 
   create_table "action_text_rich_texts", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

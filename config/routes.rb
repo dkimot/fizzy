@@ -95,6 +95,7 @@ Rails.application.routes.draw do
       resource :self_assignment, only: :create
       resources :steps
       resources :taggings
+      resources :agent_sessions, only: %i[ create show ]
 
       resources :comments do
         resources :reactions, module: :comments
