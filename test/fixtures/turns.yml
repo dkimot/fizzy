@@ -1,0 +1,36 @@
+logo_session_turn_one:
+  id: <%= ActiveRecord::FixtureSet.identify("logo_session_turn_one", :uuid) %>
+  parent_type: AgentSession
+  parent_id: <%= ActiveRecord::FixtureSet.identify("logo_session", :uuid) %>
+  creator: system_uuid
+  account: 37s_uuid
+  role: assistant
+  position: 1
+  status: completed
+  content: The card discusses logo sizing. Consider conducting a user survey for preferred dimensions.
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 1.day.ago %>
+
+logo_chat_user_turn:
+  id: <%= ActiveRecord::FixtureSet.identify("logo_chat_user_turn", :uuid) %>
+  parent_type: Chat
+  parent_id: <%= ActiveRecord::FixtureSet.identify("logo_chat", :uuid) %>
+  creator: david_uuid
+  account: 37s_uuid
+  role: user
+  content: What do you think about the logo size?
+  streaming: false
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 2.days.ago %>
+
+logo_chat_assistant_turn:
+  id: <%= ActiveRecord::FixtureSet.identify("logo_chat_assistant_turn", :uuid) %>
+  parent_type: Chat
+  parent_id: <%= ActiveRecord::FixtureSet.identify("logo_chat", :uuid) %>
+  creator: system_uuid
+  account: 37s_uuid
+  role: assistant
+  content: The logo could be made larger for better visibility.
+  streaming: false
+  created_at: <%= 2.days.ago + 1.second %>
+  updated_at: <%= 1.day.ago %>

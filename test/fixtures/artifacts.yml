@@ -1,0 +1,7 @@
+logo_plan:
+  id: <%= ActiveRecord::FixtureSet.identify("logo_plan", :uuid) %>
+  account: 37s_uuid
+  name: logo-redesign-plan.md
+  mime_type: text/plain
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 1.day.ago %>
