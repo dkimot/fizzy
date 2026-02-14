@@ -1,13 +1,12 @@
-module Chat::Message::Streamable
+module Turn::Streamable
   extend ActiveSupport::Concern
 
   def stream_later
-    Chat::Message::StreamJob.perform_later(self)
+    Turn::StreamJob.perform_later(self)
   end
 
-  # Called by StreamJob. Subclasses or configurations provide the
-  # actual LLM integration. The job appends chunks to content and
-  # broadcasts_refreshes pushes updates to subscribers via ActionCable.
+  # Called by StreamJob. The actual LLM integration calls
+  # append(chunk) for each response chunk and finish() when done.
   def stream_now
     update!(streaming: true)
   rescue => e
@@ -15,9 +14,8 @@ module Chat::Message::Streamable
     raise e
   end
 
-  # Called after each chunk arrives from the LLM provider.
-  # Appends the chunk to the message content and saves,
-  # triggering broadcasts_refreshes to push the update.
+  # Appends a chunk to the turn content and saves,
+  # triggering broadcasts_refreshes to push the update via ActionCable.
   def append(chunk)
     update!(content: content + chunk)
   end
@@ -26,15 +24,15 @@ module Chat::Message::Streamable
   # was requested, executes it and continues the conversation.
   def finish(tool_name: nil, tool_input: nil)
     if tool_name.present?
-      run_tool(tool_name, tool_input)
-      chat.reply_from_tool(tool_output)
+      execute_tool(tool_name, tool_input)
+      parent.reply_from_tool(tool_output)
     end
 
     update!(streaming: false)
   end
 
   private
-    def run_tool(tool_name, tool_input)
+    def execute_tool(tool_name, tool_input)
       output = Chat::Toolbox.new(card).call(tool_name, tool_input)
       update!(tool_name: tool_name, tool_input: tool_input, tool_output: output)
     end

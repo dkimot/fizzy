@@ -3,7 +3,10 @@ class Chat::Toolbox
 
   TOOLS = [
     Chat::Tool::SearchCards,
-    Chat::Tool::GetCard
+    Chat::Tool::GetCard,
+    Chat::Tool::CreateArtifact,
+    Chat::Tool::ReadArtifact,
+    Chat::Tool::UpdateArtifact
   ]
 
   def initialize(card)

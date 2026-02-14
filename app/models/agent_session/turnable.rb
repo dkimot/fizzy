@@ -5,9 +5,13 @@ module AgentSession::Turnable
 
   def take_next_turn
     if turns_remaining?
-      turns.create!(position: next_position).submit_later
+      turns.create!(
+        role: :assistant,
+        position: next_position,
+        creator: account.system_user
+      ).submit_later
     else
-      complete(result: turns.last&.response)
+      complete(result: turns.last&.content)
     end
   end
 

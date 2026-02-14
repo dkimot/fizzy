@@ -102,7 +102,7 @@ Rails.application.routes.draw do
       end
       resources :chats, only: %i[ create show ] do
         scope module: :chats do
-          resources :messages, only: :create
+          resources :turns, only: :create
         end
       end
 

@@ -17,35 +17,35 @@ class ChatTest < ActiveSupport::TestCase
     assert_includes cards(:logo).chats, chats(:logo_chat)
   end
 
-  test "has messages in chronological order" do
+  test "has turns in chronological order" do
     chat = chats(:logo_chat)
 
-    assert_equal 2, chat.messages.count
-    assert_equal "user", chat.messages.first.role
-    assert_equal "assistant", chat.messages.last.role
+    assert_equal 2, chat.turns.count
+    assert_equal "user", chat.turns.first.role
+    assert_equal "assistant", chat.turns.last.role
   end
 
-  test "reply creates user and assistant messages" do
+  test "reply creates user and assistant turns" do
     chat = chats(:logo_chat)
 
-    assert_difference "Chat::Message.count", 2 do
-      user_msg, assistant_msg = chat.reply("Tell me about this card")
+    assert_difference "Turn.count", 2 do
+      user_turn, assistant_turn = chat.reply("Tell me about this card")
 
-      assert_equal "user", user_msg.role
-      assert_equal "Tell me about this card", user_msg.content
-      assert_equal users(:david), user_msg.creator
+      assert_equal "user", user_turn.role
+      assert_equal "Tell me about this card", user_turn.content
+      assert_equal users(:david), user_turn.creator
 
-      assert_equal "assistant", assistant_msg.role
-      assert_equal "", assistant_msg.content
-      assert assistant_msg.streaming?
-      assert_equal users(:system), assistant_msg.creator
+      assert_equal "assistant", assistant_turn.role
+      assert_equal "", assistant_turn.content
+      assert assistant_turn.streaming?
+      assert_equal users(:system), assistant_turn.creator
     end
   end
 
-  test "reply enqueues stream job for assistant message" do
+  test "reply enqueues stream job for assistant turn" do
     chat = chats(:logo_chat)
 
-    assert_enqueued_with(job: Chat::Message::StreamJob) do
+    assert_enqueued_with(job: Turn::StreamJob) do
       chat.reply("Tell me more")
     end
   end

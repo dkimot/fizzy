@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_14_190400) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_14_194400) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -69,22 +69,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_14_190400) do
     t.index ["external_account_id"], name: "index_accounts_on_external_account_id", unique: true
   end
 
-  create_table "agent_session_turns", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.uuid "account_id", null: false
-    t.uuid "agent_session_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "position", null: false
-    t.text "response"
-    t.string "status", default: "pending", null: false
-    t.text "tool_input"
-    t.string "tool_name"
-    t.text "tool_output"
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_agent_session_turns_on_account_id"
-    t.index ["agent_session_id", "position"], name: "idx_on_agent_session_id_position_unique", unique: true
-    t.index ["agent_session_id"], name: "index_agent_session_turns_on_agent_session_id"
-  end
-
   create_table "agent_sessions", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.uuid "account_id", null: false
     t.uuid "card_id", null: false
@@ -98,6 +82,15 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_14_190400) do
     t.index ["account_id"], name: "index_agent_sessions_on_account_id"
     t.index ["card_id"], name: "index_agent_sessions_on_card_id"
     t.index ["creator_id"], name: "index_agent_sessions_on_creator_id"
+  end
+
+  create_table "artifacts", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "mime_type", default: "text/plain", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_artifacts_on_account_id"
   end
 
   create_table "action_text_rich_texts", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -245,23 +238,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_14_190400) do
     t.index ["account_id", "number"], name: "index_cards_on_account_id_and_number", unique: true
     t.index ["board_id"], name: "index_cards_on_board_id"
     t.index ["column_id"], name: "index_cards_on_column_id"
-  end
-
-  create_table "chat_messages", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.uuid "account_id", null: false
-    t.uuid "chat_id", null: false
-    t.uuid "creator_id", null: false
-    t.string "role", null: false
-    t.text "content", default: "", null: false
-    t.string "tool_name"
-    t.text "tool_input"
-    t.text "tool_output"
-    t.boolean "streaming", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_chat_messages_on_account_id"
-    t.index ["chat_id"], name: "index_chat_messages_on_chat_id"
-    t.index ["creator_id"], name: "index_chat_messages_on_creator_id"
   end
 
   create_table "chats", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -819,6 +795,29 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_14_190400) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["account_id", "title"], name: "index_tags_on_account_id_and_title", unique: true
+  end
+
+  create_table "turns", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "artifact_id"
+    t.text "content", default: "", null: false
+    t.datetime "created_at", null: false
+    t.uuid "creator_id", null: false
+    t.uuid "parent_id", null: false
+    t.string "parent_type", null: false
+    t.integer "position"
+    t.string "role", null: false
+    t.string "status", default: "pending", null: false
+    t.boolean "streaming", default: false, null: false
+    t.text "tool_input"
+    t.string "tool_name"
+    t.text "tool_output"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_turns_on_account_id"
+    t.index ["artifact_id"], name: "index_turns_on_artifact_id"
+    t.index ["creator_id"], name: "index_turns_on_creator_id"
+    t.index ["parent_type", "parent_id", "position"], name: "idx_on_parent_type_parent_id_position_unique", unique: true
+    t.index ["parent_type", "parent_id"], name: "index_turns_on_parent"
   end
 
   create_table "user_settings", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

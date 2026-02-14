@@ -60,4 +60,12 @@ class AgentSessionTest < ActiveSupport::TestCase
     assert_not session.valid?
     assert_includes session.errors[:prompt], "can't be blank"
   end
+
+  test "turns are polymorphically associated" do
+    session = agent_sessions(:logo_session)
+    turn = turns(:logo_session_turn_one)
+
+    assert_includes session.turns, turn
+    assert_equal session, turn.parent
+  end
 end

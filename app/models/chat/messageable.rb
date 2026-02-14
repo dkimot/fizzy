@@ -2,24 +2,24 @@ module Chat::Messageable
   extend ActiveSupport::Concern
 
   def reply(content)
-    user_message = messages.create!(
+    user_turn = turns.create!(
       role: :user,
       content: content,
       creator: Current.user
     )
 
-    assistant_message = create_assistant_message
+    assistant_turn = create_assistant_turn
 
-    [ user_message, assistant_message ]
+    [ user_turn, assistant_turn ]
   end
 
   def reply_from_tool(tool_output)
-    create_assistant_message
+    create_assistant_turn
   end
 
   private
-    def create_assistant_message
-      messages.create!(
+    def create_assistant_turn
+      turns.create!(
         role: :assistant,
         content: "",
         creator: account.system_user,

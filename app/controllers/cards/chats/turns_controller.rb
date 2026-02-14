@@ -1,10 +1,10 @@
-class Cards::Chats::MessagesController < ApplicationController
+class Cards::Chats::TurnsController < ApplicationController
   include CardScoped
 
   before_action :set_chat
 
   def create
-    @user_message, @assistant_message = @chat.reply(message_params[:content])
+    @user_turn, @assistant_turn = @chat.reply(turn_params[:content])
 
     respond_to do |format|
       format.turbo_stream
@@ -17,7 +17,7 @@ class Cards::Chats::MessagesController < ApplicationController
       @chat = @card.chats.find(params[:chat_id])
     end
 
-    def message_params
-      params.expect(message: [ :content ])
+    def turn_params
+      params.expect(turn: [ :content ])
     end
 end

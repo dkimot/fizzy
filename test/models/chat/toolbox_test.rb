@@ -21,9 +21,12 @@ class Chat::ToolboxTest < ActiveSupport::TestCase
   test "definitions lists all available tools" do
     definitions = @toolbox.definitions
 
-    assert_equal 2, definitions.length
+    assert_equal 5, definitions.length
     assert_includes definitions.map { |d| d[:name] }, "search_cards"
     assert_includes definitions.map { |d| d[:name] }, "get_card"
+    assert_includes definitions.map { |d| d[:name] }, "create_artifact"
+    assert_includes definitions.map { |d| d[:name] }, "read_artifact"
+    assert_includes definitions.map { |d| d[:name] }, "update_artifact"
     assert definitions.all? { |d| d[:description].present? }
   end
 end

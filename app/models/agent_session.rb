@@ -5,7 +5,7 @@ class AgentSession < ApplicationRecord
   belongs_to :card, touch: true
   belongs_to :creator, class_name: "User", default: -> { Current.user }
 
-  has_many :turns, -> { order(position: :asc) }, class_name: "AgentSession::Turn", dependent: :destroy
+  has_many :turns, -> { order(position: :asc) }, as: :parent, dependent: :destroy
 
   enum :status, %w[ pending processing completed failed ].index_by(&:itself), default: :pending
 

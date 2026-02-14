@@ -15,7 +15,7 @@ class Cards::ChatsController < ApplicationController
   def show
     respond_to do |format|
       format.turbo_stream
-      format.json { render json: @chat.as_json(include: :messages) }
+      format.json { render json: @chat.as_json(include: :turns) }
     end
   end
 

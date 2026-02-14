@@ -5,7 +5,7 @@ class Chat < ApplicationRecord
   belongs_to :card, touch: true
   belongs_to :creator, class_name: "User", default: -> { Current.user }
 
-  has_many :messages, -> { order(created_at: :asc) }, class_name: "Chat::Message", dependent: :destroy
+  has_many :turns, -> { order(created_at: :asc) }, as: :parent, dependent: :destroy
 
   broadcasts_refreshes
 

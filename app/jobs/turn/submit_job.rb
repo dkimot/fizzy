@@ -1,4 +1,4 @@
-class AgentSession::Turn::SubmitJob < ApplicationJob
+class Turn::SubmitJob < ApplicationJob
   queue_as :backend
 
   discard_on ActiveJob::DeserializationError
