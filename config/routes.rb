@@ -100,6 +100,11 @@ Rails.application.routes.draw do
           resources :callbacks, only: :create, param: :turn_id
         end
       end
+      resources :chats, only: %i[ create show ] do
+        scope module: :chats do
+          resources :messages, only: :create
+        end
+      end
 
       resources :comments do
         resources :reactions, module: :comments
