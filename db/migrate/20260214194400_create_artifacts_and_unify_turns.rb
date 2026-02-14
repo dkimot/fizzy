@@ -23,7 +23,7 @@ class CreateArtifactsAndUnifyTurns < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :turns, [ :parent_type, :parent_id, :position ], unique: true, where: "position IS NOT NULL"
+    add_index :turns, [ :parent_type, :parent_id, :position ], unique: true
 
     drop_table :agent_session_turns
     drop_table :chat_messages
